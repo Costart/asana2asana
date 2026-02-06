@@ -1,30 +1,32 @@
-"use client"
+"use client";
 
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import Link from 'next/link'
+import { createClient } from "@/lib/supabase/client";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 
 export function DashboardNav({ email }: { email?: string }) {
-  const router = useRouter()
-  const supabase = createClient()
+  const router = useRouter();
+  const supabase = createClient();
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
-    router.refresh()
-  }
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  };
 
   return (
     <nav className="border-b bg-white">
       <div className="flex h-16 items-center px-4 max-w-7xl mx-auto">
         <Link href="/dashboard" className="font-semibold text-xl">
-          App
+          Asana2Asana
         </Link>
         <div className="ml-auto flex items-center gap-4">
           <span className="text-sm text-gray-600">{email}</span>
           <Link href="/settings">
-            <Button variant="ghost" size="sm">Settings</Button>
+            <Button variant="ghost" size="sm">
+              Settings
+            </Button>
           </Link>
           <Button variant="outline" size="sm" onClick={handleSignOut}>
             Sign out
@@ -32,5 +34,5 @@ export function DashboardNav({ email }: { email?: string }) {
         </div>
       </div>
     </nav>
-  )
+  );
 }
