@@ -1,9 +1,20 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { createClient } from '@/lib/supabase/server'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { AsanaConnect } from "@/components/dashboard/AsanaConnect";
+import { createClient } from "@/lib/supabase/server";
+import { hasAsanaToken } from "@/lib/asana-token";
 
 export default async function DashboardPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const isConnected = await hasAsanaToken();
 
   return (
     <div className="space-y-6">
@@ -24,18 +35,8 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Get Started</CardTitle>
-            <CardDescription>Build your application</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-600">
-              This is your dashboard. Start building features here.
-            </p>
-          </CardContent>
-        </Card>
+        <AsanaConnect isConnected={isConnected} />
       </div>
     </div>
-  )
+  );
 }
