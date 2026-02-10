@@ -60,8 +60,12 @@ export function AsanaConnect({ isConnected }: { isConnected: boolean }) {
       });
 
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to connect");
+        const text = await res.text();
+        let message = "Failed to connect";
+        try {
+          message = JSON.parse(text).error || message;
+        } catch {}
+        throw new Error(message);
       }
 
       setToken("");
