@@ -1,18 +1,19 @@
-import { SignupForm } from '@/components/auth/SignupForm'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
+import { SignupForm } from "@/components/auth/SignupForm";
+
+export const metadata = { title: "Sign Up" };
 
 export default function SignupPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>Enter your details to get started</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SignupForm />
-        </CardContent>
-      </Card>
+    <div>
+      <h1 className="font-display text-2xl font-bold text-center text-on-surface">
+        Create an account
+      </h1>
+      <p className="mt-2 text-center text-sm text-on-surface-variant">
+        Enter your details to get started
+      </p>
+      <div className="mt-8">
+        <SignupForm />
+      </div>
     </div>
-  )
+  );
 }

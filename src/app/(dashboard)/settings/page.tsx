@@ -1,15 +1,29 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card'
-import { createClient } from '@/lib/supabase/server'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
+import { createClient } from "@/lib/supabase/server";
+
+export const metadata = { title: "Settings" };
 
 export default async function SettingsPage() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Settings</h1>
-        <p className="text-gray-600">Manage your account settings</p>
+        <h1 className="font-display text-3xl font-extrabold text-on-surface">
+          Settings
+        </h1>
+        <p className="mt-2 text-on-surface-variant">
+          Manage your account settings
+        </p>
       </div>
 
       <Card>
@@ -19,15 +33,17 @@ export default async function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           <div>
-            <p className="text-sm font-medium">Email</p>
-            <p className="text-sm text-gray-600">{user?.email}</p>
+            <p className="text-sm font-medium text-on-surface">Email</p>
+            <p className="text-sm text-on-surface-variant">{user?.email}</p>
           </div>
           <div>
-            <p className="text-sm font-medium">User ID</p>
-            <p className="text-sm text-gray-600 font-mono text-xs">{user?.id}</p>
+            <p className="text-sm font-medium text-on-surface">User ID</p>
+            <p className="text-sm text-on-surface-variant font-mono text-xs">
+              {user?.id}
+            </p>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
