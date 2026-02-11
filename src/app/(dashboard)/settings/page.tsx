@@ -5,7 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/Card";
+import { AIProviderSetup } from "@/components/dashboard/AIProviderSetup";
 import { createClient } from "@/lib/supabase/server";
+import { getAIConfig } from "@/lib/ai-token";
 
 export const metadata = { title: "Settings" };
 
@@ -14,6 +16,7 @@ export default async function SettingsPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const aiConfig = await getAIConfig();
 
   return (
     <div className="space-y-8">
@@ -25,6 +28,8 @@ export default async function SettingsPage() {
           Manage your account settings
         </p>
       </div>
+
+      <AIProviderSetup currentProvider={aiConfig?.provider ?? null} />
 
       <Card>
         <CardHeader>

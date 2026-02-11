@@ -18,13 +18,23 @@ interface AsanaProject {
   workspace: { gid: string; name: string };
 }
 
-export function AsanaConnect({ isConnected }: { isConnected: boolean }) {
+export function AsanaConnect({
+  isConnected,
+  hasActiveConnection,
+  onConnectionCreated,
+}: {
+  isConnected: boolean;
+  hasActiveConnection?: boolean;
+  onConnectionCreated?: () => void;
+}) {
   const router = useRouter();
   const [projects, setProjects] = useState<AsanaProject[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [fromProject, setFromProject] = useState("");
   const [toProject, setToProject] = useState("");
+  const [creatingSkill, setCreatingSkill] = useState(false);
+  const [skillError, setSkillError] = useState<string | null>(null);
 
   // PAT form state
   const [token, setToken] = useState("");
@@ -290,12 +300,54 @@ export function AsanaConnect({ isConnected }: { isConnected: boolean }) {
           </div>
         </div>
 
-        {fromProject && toProject && (
-          <div className="mt-4 rounded-lg bg-primary-container p-3 text-sm text-on-primary-container">
-            Ready to sync from{" "}
-            <strong>{projects.find((p) => p.gid === fromProject)?.name}</strong>{" "}
-            to{" "}
-            <strong>{projects.find((p) => p.gid === toProject)?.name}</strong>
+        {fromProject && toProject && !hasActiveConnection && (
+          <div className="mt-4 space-y-3">
+            <div className="rounded-lg bg-primary-container p-3 text-sm text-on-primary-container">
+              Analyze{" "}
+              <strong>{projects.find((p) => p.gid === toProject)?.name}</strong>{" "}
+              to learn what tasks should move from{" "}
+              <strong>
+                {projects.find((p) => p.gid === fromProject)?.name}
+              </strong>
+            </div>
+            {skillError && <p className="text-sm text-error">{skillError}</p>}
+            <Button
+              onClick={async () => {
+                setCreatingSkill(true);
+                setSkillError(null);
+                try {
+                  const fromP = projects.find((p) => p.gid === fromProject);
+                  const toP = projects.find((p) => p.gid === toProject);
+                  const res = await fetch("/api/connections", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      fromProject: { gid: fromP!.gid, name: fromP!.name },
+                      toProject: { gid: toP!.gid, name: toP!.name },
+                    }),
+                  });
+                  if (!res.ok) {
+                    const data = await res.json();
+                    throw new Error(data.error || "Failed to create skill");
+                  }
+                  onConnectionCreated?.();
+                  router.refresh();
+                } catch (err) {
+                  setSkillError(
+                    err instanceof Error
+                      ? err.message
+                      : "Failed to create skill",
+                  );
+                } finally {
+                  setCreatingSkill(false);
+                }
+              }}
+              disabled={creatingSkill}
+            >
+              {creatingSkill
+                ? "Analyzing destination project..."
+                : "Create Skill"}
+            </Button>
           </div>
         )}
       </CardContent>
